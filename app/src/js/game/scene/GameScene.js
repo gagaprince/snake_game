@@ -1,57 +1,33 @@
-var PanLayer = require('../layer/PanLayer.js');
+var BodysSprite = require('../sprite/BodysSprite.js');
 var res = require('../resource.js').res;
 var GameLayer = qc.Layer.extend({
     bgSprit:null,
 
-    panLayer:null,
+    bodysSprite:null,
 
     winSize:null,
 
-    hasWin:false,
-
-    clickNum:0,
+    midpos:null,
 
     init:function(){
-        this.winSize = qc.director.getWinSize();
+        var winSize = this.winSize = qc.director.getWinSize();
+        this.midpos = qc.p(winSize.width/2,winSize.height/2);
         this.initBg();
-        this.initPan();
-        this.initListener();
+        this.initBody();
     },
     initBg:function(){
         var winSize = this.winSize;
         this.bgSprit = qc.Sprite.create(res.bg);
         this.addChild(this.bgSprit);
-        this.bgSprit.setPosition(qc.p(winSize.width/2,winSize.height/2));
+        this.bgSprit.setPosition(this.midpos);
         this.bgSprit.setScale(0.5);
     },
-    initPan:function(){
-        var winSize = this.winSize;
-        var panLay = PanLayer.create();
-        this.addChild(panLay);
-        panLay.setPosition(qc.p(winSize.width/2,winSize.height/2));
-        panLay.setScale(0.5);
-        this.panLayer = panLay;
+    initBody:function(){
+        this.bodysSprite = BodysSprite.createByType(0);
+        this.bodysSprite.setPosition(this.midpos);
+        this.addChild(this.bodysSprite);
     },
-    checkGame:function(){
-        var panLayer = this.panLayer;
-        var isWin = true;
-        for(var x=0;x<3;x++){
-            for(var y=0;y<3;y++){
-                var winSprite = panLayer.findWinSprite(x,y);
-                if(!winSprite.isOpen()){
-                    isWin = false;
-                    break;
-                }
-            }
-        }
-        if(isWin){
-            var _this = this;
-            setTimeout(function(){
-                alert("你赢了！你点击了"+_this.clickNum+"下");
-            });
-            this.hasWin = true;
-        }
-    },
+
     initListener:function(){
         var _t = this;
         qc.EventManager.addListener({
