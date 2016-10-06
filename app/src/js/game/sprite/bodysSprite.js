@@ -3,10 +3,11 @@ var HeadSprite = require('./headSprite.js');
 var BodysSprite = qc.Sprite.extend({
     direction:null,
     moveDirection:null,
-    step:13,
+    step:10,
     bodyLayer:null,
     bodys:[],
     type:0,
+    dtime:100,
     init:function(type){
         this.type = type;
         this.bodyLayer = qc.Layer.create();
@@ -63,7 +64,8 @@ var BodysSprite = qc.Sprite.extend({
         for(var i=0;i<bodys.length;i++){
             var tempBody = bodys[i];
             var tempPos = tempBody.getPosition();
-            tempBody.setPosition(pos);
+            //tempBody.setPosition(pos);
+            tempBody.stepOn(pos,this.dtime);
             pos = tempPos;
         }
     },
@@ -79,7 +81,7 @@ var BodysSprite = qc.Sprite.extend({
         var _this = this;
         var myInterval = setInterval(function(){
             _this.move();
-        },200);
+        },this.dtime);
     }
 
 });

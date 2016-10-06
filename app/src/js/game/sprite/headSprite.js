@@ -1,6 +1,6 @@
 var BodySprite = require('./bodySprite.js');
 var CircleSprite = require('./CircleSprite.js');
-var HeadSprite = qc.Sprite.extend({
+var HeadSprite = BodySprite.extend({
     bodySprite:null,
     eyeSprite:null,
     layer:null,

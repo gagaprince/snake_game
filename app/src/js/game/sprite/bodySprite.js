@@ -7,6 +7,10 @@ var BodySprite = qc.Sprite.extend({
     bottomCircle:null,
     topCircle:null,
 
+    steps:[],
+    isMove:false,
+    dtime:0.001,
+
     init:function(r,color){
         this.color1 = color;
         this.r = r;
@@ -20,6 +24,33 @@ var BodySprite = qc.Sprite.extend({
         this.topCircle.setPosition(qc.p(1,0));
         this.addChild(this.bottomCircle);
         this.addChild(this.topCircle);
+    },
+    stepOn:function(pos,dtime){
+        this.dtime = (dtime-10)/1000;
+        this.steps.push(pos);
+        this.startMove();
+    },
+    startMove:function(){
+        if(!this.isMove){
+            this.isMove = true;
+            this.move();
+        }
+    },
+    move:function(){
+        var nextPos = this.steps.shift();
+        //console.log(nextPos);
+        //console.log("xia yi ge ")
+        if(nextPos){
+            var moveAction = qc.MoveTo.create(this.dtime,nextPos);
+            var _this = this;
+            var callFun = qc.CallFunc.create(function(){
+                _this.move();
+            },this);
+            var actons = qc.Sequence.create([moveAction,callFun]);
+            this.runAction(actons);
+        }else{
+            this.isMove = false;
+        }
     }
 });
 var BodySpriteTypes=[
