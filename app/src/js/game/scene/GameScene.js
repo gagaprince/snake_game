@@ -1,5 +1,9 @@
 var BodysSprite = require('../sprite/BodysSprite.js');
 var res = require('../resource.js').res;
+var touchTemp={
+    start:{},
+    end:{}
+};
 var GameLayer = qc.Layer.extend({
     bgSprit:null,
 
@@ -14,6 +18,7 @@ var GameLayer = qc.Layer.extend({
         this.midpos = qc.p(winSize.width/2,winSize.height/2);
         this.initBg();
         this.initBody();
+        this.initListener();
     },
     initBg:function(){
         var winSize = this.winSize;
@@ -40,21 +45,40 @@ var GameLayer = qc.Layer.extend({
     },
     //如果需要阻止冒泡 则 使用stopPropagation
     onTouchBegan:function(touch,event){
-        if(this.hasWin)return;
         var touchLocation = touch.getLocation();
-        var panLayer = this.panLayer;
-        var indexP = panLayer.checkPan(touchLocation);
-        if(indexP!=null){
-            this.clickNum ++;
-            panLayer.clickIndexP(indexP);
-        }
-        this.checkGame();
+        touchTemp["start"]=touchLocation;
     },
     onTouchMoved:function(touch,event){
-
+        var touchLocation = touch.getLocation();
+        touch["end"]=touchLocation;
+        var startTouch = touchTemp  ["start"];
+        var disObj = this._giveMeDisObj(startTouch,touchLocation);
+        if(disObj.dis>10){
+            //计算角度
+            var cos = disObj.disx/disObj.dis;
+            var angle = -Math.acos(cos)/Math.PI*180;
+            if(disObj.disy<0){
+                angle = -angle;
+            }
+            this.bodysSprite.changeToAngle(angle);
+        }
     },
     onTouchEnded:function(touch,event){
-
+        touch["start"]=touch["end"]=null;
+    },
+    _giveMeDisObj:function(p1,p2){
+        var sx = p1.x;
+        var sy = p1.y;
+        var ex = p2.x;
+        var ey = p2.y;
+        var disx = ex-sx;
+        var disy = ey-sy;
+        var dis = Math.sqrt(disx*disx+disy*disy);
+        return {
+            disx:disx,
+            disy:disy,
+            dis:dis
+        };
     }
 });
 var GameScene = qc.Scene.extend({

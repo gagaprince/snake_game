@@ -8,12 +8,13 @@ var BodysSprite = qc.Sprite.extend({
     bodys:[],
     type:0,
     dtime:100,
+    headRotateAction:null,
     init:function(type){
         this.type = type;
         this.bodyLayer = qc.Layer.create();
         this.addChild(this.bodyLayer);
         this.direction = Math.floor(Math.random()*360);
-        this.moveDirection = 180+this.direction;
+        this.moveDirection = this.direction-180;
         console.log(this.direction);
         console.log(this.moveDirection);
         this.initHead();
@@ -28,7 +29,7 @@ var BodysSprite = qc.Sprite.extend({
     },
     initBodys:function(){
         var bodys = this.bodys;
-        for(var i=1;i<6;i++){
+        for(var i=1;i<26;i++){
             var lastBody = bodys[bodys.length-1];
             var body = BodySprite.createByType(this.type);
             var pos = this.cacularNextPos(lastBody&&lastBody.getPosition(),this.direction,this.step);
@@ -54,9 +55,7 @@ var BodysSprite = qc.Sprite.extend({
     },
     move:function(){
         var head = this.bodys[0];
-        var nextPos = this.cacularNextPos(head.getPosition(),this.moveDirection,this.step);
-        //console.log(this.moveDirection);
-        //console.log(nextPos);
+        var nextPos = this.cacularNextPos(head.getPosition(),head.getRotation(),this.step);
         this.stepOn(nextPos);
     },
     stepOn:function(pos){
@@ -82,6 +81,21 @@ var BodysSprite = qc.Sprite.extend({
         var myInterval = setInterval(function(){
             _this.move();
         },this.dtime);
+    },
+    changeToAngle:function(angle){
+        var header = this.bodys[0];
+        var direction = header.getRotation();
+        console.log("dir:"+direction);
+        var da = Math.abs(angle-direction);
+        console.log(da);
+        if(da>10&&da<350) {
+            if(this.headRotateAction){
+                header.stopAction(this.headRotateAction);
+            }
+            var moveAction=this.headRotateAction = qc.RotateTo.create(0.1,angle);
+            header.runAction(moveAction);
+            //header.setRotation(angle);
+        }
     }
 
 });

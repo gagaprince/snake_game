@@ -38,8 +38,6 @@ var BodySprite = qc.Sprite.extend({
     },
     move:function(){
         var nextPos = this.steps.shift();
-        //console.log(nextPos);
-        //console.log("xia yi ge ")
         if(nextPos){
             var moveAction = qc.MoveTo.create(this.dtime,nextPos);
             var _this = this;
