@@ -29,7 +29,7 @@ var BodysSprite = qc.Sprite.extend({
     },
     initBodys:function(){
         var bodys = this.bodys;
-        for(var i=1;i<26;i++){
+        for(var i=1;i<50;i++){
             var lastBody = bodys[bodys.length-1];
             var body = BodySprite.createByType(this.type);
             var pos = this.cacularNextPos(lastBody&&lastBody.getPosition(),this.direction,this.step);
@@ -87,15 +87,15 @@ var BodysSprite = qc.Sprite.extend({
         var direction = header.getRotation();
         console.log("dir:"+direction);
         var da = Math.abs(angle-direction);
-        console.log(da);
-        if(da>10&&da<350) {
-            if(this.headRotateAction){
-                header.stopAction(this.headRotateAction);
-            }
-            var moveAction=this.headRotateAction = qc.RotateTo.create(0.1,angle);
-            header.runAction(moveAction);
-            //header.setRotation(angle);
-        }
+        //console.log(da);
+        //if(da>10&&da<350) {
+        //    if(this.headRotateAction){
+        //        //header.stopAction(this.headRotateAction);
+        //    }
+        //    var moveAction=this.headRotateAction = qc.RotateTo.create(0.1,angle);
+            //header.runAction(moveAction);
+            header.setRotation(angle);
+        //}
     }
 
 });
